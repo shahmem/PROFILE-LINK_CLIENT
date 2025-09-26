@@ -43,7 +43,11 @@ const AddUser = ({ setUser }) => {
 
   return (
     <div className="max-w-md mx-auto p-6  bg-white rounded-2xl shadow-xl">
+<<<<<<< HEAD
       <h2 className="text-2xl font-bold mb-4 text-center">Add User</h2>
+=======
+      <h2 className="text-2xl font-bold mb-4 text-center">Add Profile</h2>
+>>>>>>> b0038a2 (Update frontend components)
       {message && (
         <div
           className={`mb-4 px-4 py-2 rounded ${
