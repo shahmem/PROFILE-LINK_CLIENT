@@ -14,7 +14,7 @@ function Home({user,setUser}) {
   return (
     <div className="bg-gray-50">
       <Navbar />
-      <div className="pt-12">
+      <div className="pt-28">
         {!user ? (
           <AddUser setUser={setUser} />
         ) : (
