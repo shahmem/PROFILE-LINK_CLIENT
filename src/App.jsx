@@ -28,7 +28,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AddBio />} />
         <Route path="/home" element={<Home user={user} setUser={setUser} />} />
-        <Route path="/dashboard" element={<Dashboard user={user} />} />
+        <Route path="/dashboard" state={{ user }}  element={<Dashboard user={user} />} />
       </Routes>
     </BrowserRouter>
   );
