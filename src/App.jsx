@@ -23,7 +23,7 @@ function App() {
     fetchUser();
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (loading) return <p className="text-center">Loading...</p>;
 
   return (
     <BrowserRouter>
