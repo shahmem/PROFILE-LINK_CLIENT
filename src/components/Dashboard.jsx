@@ -137,19 +137,18 @@ const Dashboard = ({ user }) => {
     }
   };
 
-  const handleShare = () => {
-    const profileLink = window.location.href; 
-    if (navigator.share) {
-      navigator.share({
-        title: `${user.displayName}'s Profile`,
-        url: profileLink,
-      });
-    } else {
-      
-      navigator.clipboard.writeText(profileLink);
-      alert("Profile link copied to clipboard!");
-    }
-  };
+ const handleShare = () => {
+  const profileLink = `https://profile-link-client.vercel.app/profile/${user.username}`;
+  if (navigator.share) {
+    navigator.share({
+      title: `${user.displayName}'s Profile`,
+      url: profileLink,
+    });
+  } else {
+    navigator.clipboard.writeText(profileLink);
+    alert("Profile link copied to clipboard!");
+  }
+};
 
   return (
     <div className="relative py-6">
