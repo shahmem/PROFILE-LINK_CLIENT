@@ -3,7 +3,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket, faCircleUser, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FiMoreVertical } from "react-icons/fi";
-import { FaInstagram, FaWhatsapp, FaGithub, FaHashtag, FaShareAlt } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp, FaGithub, FaHashtag } from "react-icons/fa";
 
 const iconMap = {
   WhatsApp: <FaWhatsapp className="text-green-600" />,
@@ -13,7 +13,8 @@ const iconMap = {
   Website: <FontAwesomeIcon icon={faLink} />,
 };
 
-const Dashboard = ({ user }) => {
+const Dashboard = () => {
+  const [user, setUser] = useState(null);
   const [links, setLinks] = useState([]);
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
@@ -25,10 +26,31 @@ const Dashboard = ({ user }) => {
   const dropdownRefs = useRef({});
   const addBoxRef = useRef(null);
 
+  // Fetch user and links
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/profiles`);
+        setUser(res.data); // single user object
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const fetchLinks = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/links`);
+        setLinks(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUser();
     fetchLinks();
   }, []);
 
+  // Close add-box when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showAddBox && addBoxRef.current && !addBoxRef.current.contains(event.target)) {
@@ -41,15 +63,6 @@ const Dashboard = ({ user }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showAddBox]);
-
-  const fetchLinks = async () => {
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/links`);
-      setLinks(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleAddOrEdit = async () => {
     try {
@@ -112,7 +125,10 @@ const Dashboard = ({ user }) => {
       setUrl("");
       setSelectedType(null);
       setShowAddBox(false);
-      fetchLinks();
+
+      // Refresh links
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/links`);
+      setLinks(res.data);
     } catch (err) {
       console.error(err);
     }
@@ -130,7 +146,7 @@ const Dashboard = ({ user }) => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/links/${id}`);
-      fetchLinks();
+      setLinks(links.filter((link) => link._id !== id));
       setOpenMenuId(null);
     } catch (err) {
       console.error(err);
@@ -138,10 +154,10 @@ const Dashboard = ({ user }) => {
   };
 
   const handleShare = () => {
-    const profileLink = window.location.href; 
+    const profileLink = `${window.location.origin}/dashboard`; // always direct link to dashboard
     if (navigator.share) {
       navigator.share({
-        title: `${user.displayName}'s Profile`,
+        title: user?.displayName ? `${user.displayName}'s Profile` : "Profile",
         url: profileLink,
       });
     } else {
@@ -150,15 +166,17 @@ const Dashboard = ({ user }) => {
     }
   };
 
+  if (!user) return <p className="text-center mt-10">Loading...</p>;
+
   return (
     <div className="relative py-6">
       <div className="p-5 flex flex-col items-center">
-         <button
-        className="absolute ml-56 h-9 w-9 flex items-center gap-2 bg-gray-300 text-white p-2 rounded-full shadow hover:bg-gray-400 transition"
-        onClick={handleShare}
-      >
-       <FontAwesomeIcon icon={faArrowUpFromBracket} />
-      </button>
+        <button
+          className="absolute ml-56 h-9 w-9 flex items-center gap-2 bg-gray-300 text-white p-2 rounded-full shadow hover:bg-gray-400 transition"
+          onClick={handleShare}
+        >
+          <FontAwesomeIcon icon={faArrowUpFromBracket} />
+        </button>
         <div className="text-4xl">
           <FontAwesomeIcon className="opacity-45" icon={faCircleUser} size="2xl" />
         </div>
@@ -168,6 +186,7 @@ const Dashboard = ({ user }) => {
         </div>
       </div>
 
+      {/* Add Link Button */}
       <div className="p-5 flex justify-center">
         <button
           onClick={() => {
@@ -182,6 +201,7 @@ const Dashboard = ({ user }) => {
         </button>
       </div>
 
+      {/* Add/Edit Box */}
       {showAddBox && (
         <div ref={addBoxRef} className="w-full max-w-md mx-auto bg-gray-50 p-4 rounded-lg shadow">
           {!selectedType ? (
@@ -256,6 +276,7 @@ const Dashboard = ({ user }) => {
         </div>
       )}
 
+      {/* Links List */}
       <div className="p-4 rounded-3xl bg-white flex flex-col items-center mt-4">
         <div className="w-full max-w-md flex flex-col gap-2">
           {links.length === 0 ? (
