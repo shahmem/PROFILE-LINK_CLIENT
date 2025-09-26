@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/profiles/user");
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/profiles/user`);
         setUser(res.data);
       } catch (err) {
         console.error(err);

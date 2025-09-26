@@ -29,7 +29,6 @@ const Dashboard = ({ user }) => {
     fetchLinks();
   }, []);
 
-  // Close add box when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showAddBox && addBoxRef.current && !addBoxRef.current.contains(event.target)) {
@@ -45,7 +44,7 @@ const Dashboard = ({ user }) => {
 
   const fetchLinks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/links");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/links`);
       setLinks(res.data);
     } catch (err) {
       console.error(err);
@@ -57,7 +56,6 @@ const Dashboard = ({ user }) => {
       let finalTitle = selectedType;
       let finalUrl = url.trim();
 
-      // VALIDATION
       if (!finalUrl && selectedType !== "Website") {
         alert("Input cannot be empty!");
         return;
@@ -96,14 +94,14 @@ const Dashboard = ({ user }) => {
       const icon = selectedType;
 
       if (editingLink) {
-        await axios.put(`http://localhost:5000/api/links/${editingLink._id}`, {
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/links/${editingLink._id}`, {
           title: finalTitle,
           url: finalUrl,
           icon,
         });
         setEditingLink(null);
       } else {
-        await axios.post(`http://localhost:5000/api/links`, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/links`, {
           title: finalTitle,
           url: finalUrl,
           icon,
@@ -131,7 +129,7 @@ const Dashboard = ({ user }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/links/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/links/${id}`);
       fetchLinks();
       setOpenMenuId(null);
     } catch (err) {
@@ -140,14 +138,14 @@ const Dashboard = ({ user }) => {
   };
 
   const handleShare = () => {
-    const profileLink = window.location.href; // Or any link you want to share
+    const profileLink = window.location.href; 
     if (navigator.share) {
       navigator.share({
         title: `${user.displayName}'s Profile`,
         url: profileLink,
       });
     } else {
-      // Fallback: copy to clipboard
+      
       navigator.clipboard.writeText(profileLink);
       alert("Profile link copied to clipboard!");
     }

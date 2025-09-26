@@ -6,7 +6,7 @@ const PublicProfile = ({ userId }) => {
   const [links, setLinks] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/users/${userId}`).then((res) => {
+    axios.get(`${import.meta.env.VITE_API_URL}/api/users/${userId}`).then((res) => {
       setUser(res.data.user);
       setLinks(res.data.links);
     });

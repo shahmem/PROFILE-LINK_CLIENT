@@ -21,7 +21,7 @@ function HomeBio({ user }) {
 
   const fetchLinks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/links");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/links`);
       setLinks(res.data);
     } catch (err) {
       console.error("Error fetching links:", err);
