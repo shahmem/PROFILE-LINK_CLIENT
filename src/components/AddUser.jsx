@@ -42,6 +42,8 @@ const AddUser = ({ setUser }) => {
   };
 
   return (
+    <div className="pt-16">
+
     <div className="max-w-md mx-auto p-6  bg-white rounded-2xl shadow-xl">
       <h2 className="text-2xl font-bold mb-4 text-center">Add Profile</h2>
       {message && (
@@ -98,6 +100,7 @@ const AddUser = ({ setUser }) => {
           {loading ? "Adding..." : "Add User"}
         </button>
       </form>
+    </div>
     </div>
   );
 };
